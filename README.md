@@ -23,8 +23,8 @@ Berikut adalah penjelasan relasi dan kardinalitas antar entitas sesuai format ya
 1. Users – Mahasiswa
 
   One-to-One
-   Setiap mahasiswa adalah user dengan peran (role) "mahasiswa".
-   Diimplementasikan dengan `NIM` sebagai FK di tabel Users.
+    Setiap mahasiswa adalah user dengan peran (role) "mahasiswa".
+    Diimplementasikan dengan `NIM` sebagai FK di tabel Users.
 
 2. Users – Dosen Wali
 
