@@ -69,6 +69,20 @@ Berikut adalah penjelasan relasi dan kardinalitas antar entitas sesuai format ya
 # Revisi Database
 Table users di update menambahkan kolom nim dan nidn di karenakan untuk menghubungkan table dosen agar dosen dapat menambahkan saran akademik di table pertemuan perwalian sesuai dengan data mahasiswa
 
+# Struktur Table
+1. dosen_wali
+![Screenshot 2025-05-26 090952](https://github.com/user-attachments/assets/32fbec7d-7677-41dc-b748-4fab339dc332)
 
+2. mahasiswa
+   ![Screenshot 2025-05-26 091011](https://github.com/user-attachments/assets/20425a93-46cd-48fc-b635-bb4b7e7294f5)
+
+3. notifikasi
+   ![Screenshot 2025-05-26 091029](https://github.com/user-attachments/assets/629fffd1-a8e7-43a6-9385-103a16b9c552)
+
+4. pertemuan_perwalian
+   ![Screenshot 2025-05-26 091044](https://github.com/user-attachments/assets/4e680fe5-32fe-4d0f-a4b2-9fd3da73fded)
+
+5. users
+   ![Screenshot 2025-05-26 091103](https://github.com/user-attachments/assets/233cab28-6b02-463a-8830-b11f9c039d90)
 
 
