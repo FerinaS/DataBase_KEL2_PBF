@@ -5,6 +5,8 @@ Navicat adalah aplikasi GUI (Graphical User Interface) untuk mengelola database 
 
 ERD (Entity Relationship Diagram) di MySQL digunakan untuk merancang struktur database relasional, lalu diimplementasikan dalam bentuk perintah SQL (Structured Query Language) seperti CREATE TABLE, FOREIGN KEY, dan PRIMARY KEY.
 
+mysql itu untuk
+
 # Fungsi Database
 1. Penyimpanan Data: Menyimpan data secara terstruktur dan terorganisir.
 2. Pengambilan Data: Memungkinkan pengguna untuk mencari dan mengambil data yang spesifik dengan cepat.
