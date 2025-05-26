@@ -1,6 +1,10 @@
 # DataBase
 Database adalah tempat menyimpan data secara teratur di komputer, sehingga memudahkan dalam mengakses, mengatur, dan memperbarui informasi
 
+Navicat adalah aplikasi GUI (Graphical User Interface) untuk mengelola database MySQL
+
+ERD (Entity Relationship Diagram) di MySQL digunakan untuk merancang struktur database relasional, lalu diimplementasikan dalam bentuk perintah SQL (Structured Query Language) seperti CREATE TABLE, FOREIGN KEY, dan PRIMARY KEY.
+
 # Tujuan Database
 1. Menghindari redudansi data (pengulangan).
 2. Menjaga konsistensi dan integritas data.
