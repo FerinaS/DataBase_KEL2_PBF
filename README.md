@@ -86,3 +86,204 @@ Table users di update menambahkan kolom nim dan nidn di karenakan untuk menghubu
    ![Screenshot 2025-05-26 091103](https://github.com/user-attachments/assets/233cab28-6b02-463a-8830-b11f9c039d90)
 
 
+
+
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
+class MahasiswaController extends Controller
+{
+    protected $api = 'http://localhost:8080/mahasiswa';
+
+    public function index(Request $request)
+    {
+        $response = Http::get($this->api);
+        $data = $response->json();
+    
+        $keyword = $request->input('q');
+    
+        if ($keyword) {
+            $data = array_filter($data, function ($item) use ($keyword) {
+                return stripos($item['nama_mhs'], $keyword) !== false || 
+                       stripos($item['npm_mhs'], $keyword) !== false;
+            });
+        }
+    
+        return view('mahasiswa.index', ['mahasiswa' => $data]);
+    }
+    
+
+    public function create()
+    {
+        return view('mahasiswa.create');
+    }
+
+    public function store(Request $request)
+    {
+        $response = Http::post($this->api, $request->all());
+
+        if ($response->successful()) {
+            return redirect('/mahasiswa')->with('success', 'Data berhasil ditambahkan');
+        } else {
+            return back()->withErrors([
+                'status' => $response->status(),
+                'message' => 'Gagal menyimpan data.',
+                'response' => $response->body()
+            ])->withInput();
+        }
+    }
+
+    public function edit($id)
+{
+    $response = Http::get("http://localhost:8080/mahasiswa/$id");
+    $result = $response->json();
+
+    return view('mahasiswa.edit', [
+        'mahasiswa' => $result['data'] // ambil hanya bagian 'data'
+    ]);
+}
+
+
+    public function update(Request $request, $npm_mhs)
+    {
+        $response = Http::put("{$this->api}/{$npm_mhs}", $request->all());
+
+        if ($response->successful()) {
+            return redirect('/mahasiswa')->with('success', 'Data berhasil diupdate');
+        } else {
+            return back()->withErrors([
+                'status' => $response->status(),
+                'message' => 'Gagal mengupdate data.',
+                'response' => $response->body()
+            ])->withInput();
+        }
+    }
+
+    public function destroy($npm_mhs)
+    {
+        $response = Http::delete("{$this->api}/{$npm_mhs}");
+
+        if ($response->successful()) {
+            return redirect('/mahasiswa')->with('success', 'Data berhasil dihapus');
+        } else {
+            return back()->withErrors([
+                'status' => $response->status(),
+                'message' => 'Gagal menghapus data.',
+                'response' => $response->body()
+            ]);
+        }
+    }
+}
+
+(controller)
+
+
+
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PembimbingController;
+
+// ✅ Login routes
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::get('/logout', [LoginController::class, 'logout']);
+
+// ✅ Home redirect
+Route::get('/', fn() => redirect('/login'));
+
+// ✅ Dashboard
+Route::get('/dashboard', function () {
+    // Kalau belum login, arahkan ke /login
+    if (!session('username')) {
+        return redirect('/login');
+    }
+
+    // Kalau sudah login, panggil controller dashboard
+    $controller = new DashboardController;
+    return $controller->index();
+});
+
+// ✅ CRUD Mahasiswa
+Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
+Route::get('/mahasiswa/create', [MahasiswaController::class, 'create'])->name('mahasiswa.create');
+Route::post('/mahasiswa', [MahasiswaController::class, 'store'])->name('mahasiswa.store');
+Route::get('/mahasiswa/{npm_mhs}/edit', [MahasiswaController::class, 'edit'])->name('mahasiswa.edit');
+Route::put('/mahasiswa/{npm_mhs}', [MahasiswaController::class, 'update'])->name('mahasiswa.update');
+Route::delete('/mahasiswa/{npm_mhs}', [MahasiswaController::class, 'destroy'])->name('mahasiswa.destroy');
+
+
+Route::get('/pembimbing', [PembimbingController::class, 'index'])->name('pembimbing.index');
+
+// Menampilkan form tambah pembimbing
+Route::get('/pembimbing/create', [PembimbingController::class, 'create'])->name('pembimbing.create');
+
+// Menyimpan data pembimbing baru
+Route::post('/pembimbing', [PembimbingController::class, 'store'])->name('pembimbing.store');
+
+// Menampilkan form edit berdasarkan NPM pembimbing
+Route::get('/pembimbing/{nidn_pembimbing}/edit', [PembimbingController::class, 'edit'])->name('pembimbing.edit');
+
+// Menyimpan perubahan data pembimbing (update)
+Route::put('/pembimbing/{nidn_pembimbing}', [PembimbingController::class, 'update'])->name('pembimbing.update');
+
+// Menghapus data pembimbing berdasarkan NPM
+Route::delete('/pembimbing/{nidn_pembimbing}', [PembimbingController::class, 'destroy'])->name('pembimbing.destroy');
+
+(routes frontend)
+<?php
+
+use CodeIgniter\Router\RouteCollection;
+
+/**
+ * @var RouteCollection $routes
+ */
+$routes->get('/', 'Home::index');
+
+// Routes untuk Authentication
+$routes->group('auth', function($routes) {
+    $routes->post('login', 'UserController::login');
+    $routes->post('register', 'UserController::register');
+});
+
+// User Management (resource-style manual)
+$routes->group('user', function($routes) {
+    $routes->get('/', 'UserController::getAllUsers');
+    $routes->put('update/(:segment)', 'UserController::updateUser/$1');
+    $routes->delete('delete/(:segment)', 'UserController::deleteUser/$1');
+});
+
+// ===== RESOURCE ROUTES MULAI DARI SINI ===== //
+
+// Mahasiswa API (Laravel-style)
+$routes->resource('mahasiswa', [
+    'controller' => 'MahasiswaController',
+]);
+
+// Pembimbing API
+$routes->resource('pembimbing', [
+    'controller' => 'PembimbingController',
+]);
+
+// Perusahaan API
+$routes->resource('perusahaan', [
+    'controller' => 'PerusahaanController',
+]);
+
+// Magang API
+$routes->resource('magang', [
+    'controller' => 'MagangController',
+]);
+
+(backend)
+
+
+
