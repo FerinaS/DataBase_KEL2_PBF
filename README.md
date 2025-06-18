@@ -86,7 +86,7 @@ Table users di update menambahkan kolom nim dan nidn di karenakan untuk menghubu
    ![Screenshot 2025-05-26 091103](https://github.com/user-attachments/assets/233cab28-6b02-463a-8830-b11f9c039d90)
 
 
-
+```blade
 
 <?php
 
@@ -285,5 +285,7 @@ $routes->resource('magang', [
 
 (backend)
 
+use Illuminate\Support\Facades\Http;
 
+```
 
